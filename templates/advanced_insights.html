@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Insights - E-commerce Data Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>E-commerce Data Analysis</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('show_insights') }}">Insights</a></li>
+                <li><a href="{{ url_for('recommendations') }}">Recommendations</a></li>
+                <li><a href="{{ url_for('advanced_insights') }}" class="active">Advanced Insights</a></li>
+                <li><a href="{{ url_for('view_cart') }}">Cart ({{ session.get('cart', [])|length }})</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="advanced-insights-header">
+            <h2>Advanced Data Insights</h2>
+            <p>Explore deeper analytics and patterns in our e-commerce data.</p>
+        </section>
+
+        {% if rfm_data %}
+            <section class="rfm-analysis">
+                <h3>RFM Analysis (Recency, Frequency, Monetary)</h3>
+                <div class="visualization">
+                    {{ rfm_data.visualization|safe }}
+                </div>
+                
+                <div class="rfm-summary">
+                    <h4>Customer Segment Summary</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Segment</th>
+                                <th>Count</th>
+                                <th>Avg. Recency (days)</th>
+                                <th>Avg. Frequency</th>
+                                <th>Avg. Monetary Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for segment in rfm_data.summary %}
+                                <tr>
+                                    <td>{{ segment.Customer_Segment }}</td>
+                                    <td>{{ segment.CustomerID }}</td>
+                                    <td>{{ "%.1f"|format(segment.Recency) }}</td>
+                                    <td>{{ "%.1f"|format(segment.Frequency) }}</td>
+                                    <td>${{ "%.2f"|format(segment.Monetary) }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        {% endif %}
+
+        {% if discount_data %}
+            <section class="discount-analysis">
+                <h3>Impact of Discounts on Sales and Profit</h3>
+                <div class="visualization">
+                    {{ discount_data.visualization|safe }}
+                </div>
+        
+                <div class="discount-summary">
+                    <h4>Discount Analysis Summary</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Discount Range</th>
+                                <th>Avg. Sales</th>
+                                <th>Avg. Quantity</th>
+                                <th>Avg. Profit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in discount_data.summary %}
+                                <tr>
+                                    <td>{{ item.Discount_Bin }}</td>
+                                    <td>${{ "%.2f"|format(item.Sales) }}</td>
+                                    <td>{{ "%.1f"|format(item.Quantity) }}</td>
+                                    <td>${{ "%.2f"|format(item.Profit) }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        {% endif %}
+
+        {% if priority_data %}
+            <section class="priority-analysis">
+                <h3>Order Priority Analysis</h3>
+                <div class="visualization">
+                    {{ priority_data.visualization|safe }}
+                </div>
+        
+                <div class="priority-summary">
+                    <h4>Order Priority Summary</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Priority</th>
+                                <th>Total Sales</th>
+                                <th>Total Quantity</th>
+                                <th>Avg. Shipping Cost</th>
+                                <th>Order Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in priority_data.summary %}
+                                <tr>
+                                    <td>{{ item.Priority }}</td>
+                                    <td>${{ "%.2f"|format(item['Total Sales']) }}</td>
+                                    <td>{{ item['Total Quantity'] }}</td>
+                                    <td>${{ "%.2f"|format(item['Avg Shipping Cost']) }}</td>
+                                    <td>{{ item['Order Count'] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        {% endif %}
+
+        {% if not rfm_data and not discount_data and not priority_data %}
+            <section class="no-advanced-data">
+                <p>Advanced insights are not available for the current dataset. This could be due to insufficient data or missing required fields.</p>
+            </section>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 E-commerce Data Analysis</p>
+    </footer>
+</body>
+</html>

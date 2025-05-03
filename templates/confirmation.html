@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - E-commerce Data Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>E-commerce Data Analysis</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('show_insights') }}">Insights</a></li>
+                <li><a href="{{ url_for('recommendations') }}">Recommendations</a></li>
+                <li><a href="{{ url_for('advanced_insights') }}">Advanced Insights</a></li>
+                <li><a href="{{ url_for('view_cart') }}">Cart ({{ session.get('cart', [])|length }})</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="confirmation">
+            <div class="confirmation-message">
+                <h2>Thank You for Your Order!</h2>
+                <p>Your order has been successfully placed.</p>
+                <p>Order ID: <strong>{{ order_id }}</strong></p>
+                <p>A confirmation email has been sent to your email address.</p>
+            </div>
+            
+            <div class="confirmation-actions">
+                <a href="{{ url_for('index') }}" class="button">Continue Shopping</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 E-commerce Data Analysis</p>
+    </footer>
+</body>
+</html>

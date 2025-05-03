@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations - E-commerce Data Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>E-commerce Data Analysis</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('show_insights') }}">Insights</a></li>
+                <li><a href="{{ url_for('recommendations') }}" class="active">Recommendations</a></li>
+                <li><a href="{{ url_for('advanced_insights') }}">Advanced Insights</a></li>
+                <li><a href="{{ url_for('view_cart') }}">Cart ({{ session.get('cart', [])|length }})</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="recommendations-header">
+            <h2>Personalized Recommendations</h2>
+            <p>Based on your browsing history and our association rules analysis.</p>
+        </section>
+
+        <section class="recommendations-list">
+            {% if recommendations %}
+                {% for rec in recommendations %}
+                    <div class="recommendation-card">
+                        <h3>Based on: {{ rec.based_on }}</h3>
+                        <p>We recommend: <a href="{{ url_for('product_detail', product_name=rec.recommendation) }}">{{ rec.recommendation }}</a></p>
+                        <p>Confidence: {{ "%.2f"|format(rec.confidence * 100) }}%</p>
+                        <a href="{{ url_for('add_to_cart', product_name=rec.recommendation) }}" class="button">Add to Cart</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-recommendations">
+                    <p>No recommendations available yet. Browse more products to get personalized recommendations!</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="viewed-products">
+            <h3>Recently Viewed Products</h3>
+            <div class="product-grid">
+                {% if session.get('viewed_products', []) %}
+                    {% for product in session.get('viewed_products', []) %}
+                        <div class="product-card">
+                            <h4><a href="{{ url_for('product_detail', product_name=product) }}">{{ product }}</a></h4>
+                            <a href="{{ url_for('add_to_cart', product_name=product) }}" class="button">Add to Cart</a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>You haven't viewed any products yet.</p>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 E-commerce Data Analysis</p>
+    </footer>
+</body>
+</html>

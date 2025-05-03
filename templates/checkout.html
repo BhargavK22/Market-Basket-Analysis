@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - E-commerce Data Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>E-commerce Data Analysis</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('show_insights') }}">Insights</a></li>
+                <li><a href="{{ url_for('recommendations') }}">Recommendations</a></li>
+                <li><a href="{{ url_for('advanced_insights') }}">Advanced Insights</a></li>
+                <li><a href="{{ url_for('view_cart') }}">Cart ({{ session.get('cart', [])|length }})</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="checkout-header">
+            <h2>Checkout</h2>
+        </section>
+
+        <section class="checkout-summary">
+            <h3>Order Summary</h3>
+            {% if cart_items %}
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                            <tr>
+                                <td>{{ item.Product }}</td>
+                                <td>{% if 'Sales' in item %}${{ "%.2f"|format(item.Sales) }}{% else %}N/A{% endif %}</td>
+                                <td>{% if 'Quantity' in item %}{{ item.Quantity }}{% else %}1{% endif %}</td>
+                                <td>{% if 'TotalPrice' in item %}${{ "%.2f"|format(item.TotalPrice) }}{% else %}N/A{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3">Total</th>
+                            <th>${{ "%.2f"|format(total_price) }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            {% else %}
+                <p>Your cart is empty.</p>
+            {% endif %}
+        </section>
+
+        <section class="checkout-form">
+            <h3>Shipping Information</h3>
+            <form action="{{ url_for('confirmation') }}" method="get">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" required>
+                </div>
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country" required>
+                </div>
+                <div class="form-group">
+                    <label for="zip">Postal/Zip Code</label>
+                    <input type="text" id="zip" name="zip" required>
+                </div>
+                
+                <h3>Payment Information</h3>
+                <div class="form-group">
+                    <label for="card">Card Number</label>
+                    <input type="text" id="card" name="card" placeholder="1234 5678 9012 3456" required>
+                </div>
+                <div class="form-group">
+                    <label for="expiry">Expiry Date</label>
+                    <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+                </div>
+                <div class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" name="cvv" placeholder="123" required>
+                </div>
+                
+                <button type="submit" class="button">Complete Purchase</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 E-commerce Data Analysis</p>
+    </footer>
+</body>
+</html>

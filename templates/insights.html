@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insights - E-commerce Data Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>E-commerce Data Analysis</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('show_insights') }}" class="active">Insights</a></li>
+                <li><a href="{{ url_for('recommendations') }}">Recommendations</a></li>
+                <li><a href="{{ url_for('advanced_insights') }}">Advanced Insights</a></li>
+                <li><a href="{{ url_for('view_cart') }}">Cart ({{ session.get('cart', [])|length }})</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="insights-header">
+            <h2>Data Insights</h2>
+            <p>Explore key insights and trends from our e-commerce dataset.</p>
+        </section>
+
+        <section class="visualizations">
+            {% if visualizations.top_products %}
+                <div class="visualization-card">
+                    <h3>Top Products by Sales Volume</h3>
+                    <div class="visualization">
+                        {{ visualizations.top_products|safe }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if visualizations.monthly_sales %}
+                <div class="visualization-card">
+                    <h3>Monthly Sales Trend</h3>
+                    <div class="visualization">
+                        {{ visualizations.monthly_sales|safe }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if visualizations.category_sales %}
+                <div class="visualization-card">
+                    <h3>Sales by Product Category</h3>
+                    <div class="visualization">
+                        {{ visualizations.category_sales|safe }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if visualizations.gender_sales %}
+                <div class="visualization-card">
+                    <h3>Sales by Gender</h3>
+                    <div class="visualization">
+                        {{ visualizations.gender_sales|safe }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if visualizations.device_sales %}
+                <div class="visualization-card">
+                    <h3>Sales by Device Type</h3>
+                    <div class="visualization">
+                        {{ visualizations.device_sales|safe }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if visualizations.payment_sales %}
+                <div class="visualization-card">
+                    <h3>Sales by Payment Method</h3>
+                    <div class="visualization">
+                        {{ visualizations.payment_sales|safe }}
+                    </div>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="insights-data">
+            {% if insights.top_products %}
+                <div class="insight-card">
+                    <h3>Top 10 Products</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity Sold</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product, quantity in insights.top_products.items() %}
+                                {% if loop.index <= 10 %}
+                                    <tr>
+                                        <td><a href="{{ url_for('product_detail', product_name=product) }}">{{ product }}</a></td>
+                                        <td>{{ quantity }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            {% if insights.category_sales %}
+                <div class="insight-card">
+                    <h3>Sales by Product Category</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Sales Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category, sales in insights.category_sales.items() %}
+                                {% if loop.index <= 10 %}
+                                    <tr>
+                                        <td>{{ category }}</td>
+                                        <td>${{ "%.2f"|format(sales) }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            {% if insights.top_customers %}
+                <div class="insight-card">
+                    <h3>Top Customers</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Customer ID</th>
+                                <th>Total Spending</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for customer, spending in insights.top_customers.items() %}
+                                {% if loop.index <= 10 %}
+                                    <tr>
+                                        <td>{{ customer }}</td>
+                                        <td>${{ "%.2f"|format(spending) }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            {% if insights.gender_sales %}
+                <div class="insight-card">
+                    <h3>Sales by Gender</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Gender</th>
+                                <th>Sales Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for gender, sales in insights.gender_sales.items() %}
+                                <tr>
+                                    <td>{{ gender }}</td>
+                                    <td>${{ "%.2f"|format(sales) }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            {% if insights.device_sales %}
+                <div class="insight-card">
+                    <h3>Sales by Device Type</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Device Type</th>
+                                <th>Sales Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for device, sales in insights.device_sales.items() %}
+                                {% if loop.index <= 10 %}
+                                    <tr>
+                                        <td>{{ device }}</td>
+                                        <td>${{ "%.2f"|format(sales) }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+            {% if insights.payment_sales %}
+                <div class="insight-card">
+                    <h3>Sales by Payment Method</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Payment Method</th>
+                                <th>Sales Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for method, sales in insights.payment_sales.items() %}
+                                {% if loop.index <= 10 %}
+                                    <tr>
+                                        <td>{{ method }}</td>
+                                        <td>${{ "%.2f"|format(sales) }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 E-commerce Data Analysis</p>
+    </footer>
+</body>
+</html>
